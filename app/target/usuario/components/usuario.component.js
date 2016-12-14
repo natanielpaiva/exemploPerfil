@@ -15,12 +15,12 @@ var usuario_service_1 = require('../service/usuario.service');
 var UsuarioComponent = (function () {
     function UsuarioComponent(usuarioService) {
         this.usuarioService = usuarioService;
+        this.usuarioObject = new usuario_1.Usuario();
         this.perfis = [
             { nome: "Admin" },
             { nome: "Oreia" },
             { nome: "Professor" }
         ];
-        this.usuarioObject = new usuario_1.Usuario();
         this.edit = false;
     }
     UsuarioComponent.prototype.deletarUsuario = function (id, i) {
@@ -41,16 +41,21 @@ var UsuarioComponent = (function () {
     UsuarioComponent.prototype.popularLista = function (usuario) {
         this.usuarios.push(usuario);
         this.usuarioObject = new usuario_1.Usuario();
-        this.usuarioObject.perfil = { nome: "" };
+        this.usuarioObject.perfil = this.perfis[0];
     };
     UsuarioComponent.prototype.editarUsuario = function (usuario, persistir) {
         if (persistir === void 0) { persistir = false; }
         this.edit = true;
+        for (var p in this.perfis) {
+            if (usuario.perfil.nome === this.perfis[p].nome) {
+                usuario.perfil = this.perfis[p];
+            }
+        }
         this.usuarioObject = usuario;
         if (persistir) {
             this.usuarioObject = new usuario_1.Usuario();
             this.edit = false;
-            this.usuarioObject.perfil = { nome: "" };
+            this.usuarioObject.perfil = this.perfis[0];
         }
     };
     UsuarioComponent.prototype.listar = function () {
@@ -60,7 +65,7 @@ var UsuarioComponent = (function () {
     };
     UsuarioComponent.prototype.ngOnInit = function () {
         this.listar();
-        this.usuarioObject.perfil = { nome: "" };
+        this.usuarioObject.perfil = this.perfis[2];
     };
     UsuarioComponent = __decorate([
         core_1.Component({
