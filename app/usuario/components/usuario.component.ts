@@ -9,24 +9,19 @@ import { UsuarioService } from '../service/usuario.service';
 })
 export class UsuarioComponent implements OnInit {
     usuarios: Usuario[];
-    
+    usuarioObject = new Usuario();
     perfis = [
-        {nome:"Admin"},
-        {nome:"Oreia"},
-        {nome:"Professor"}
+        { nome: "Admin" },
+        { nome: "Oreia" },
+        { nome: "Professor" }
     ];
-    
+
     errorMessage: any;
     i: number;
 
-    constructor(private usuarioService: UsuarioService) { }
-
-    usuarioObject = new Usuario();
-    
-    
+    constructor(private usuarioService: UsuarioService) {
+    }
     edit = false;
-    
-    
 
     deletarUsuario(id, i): void {
         this.i = i;
@@ -49,17 +44,24 @@ export class UsuarioComponent implements OnInit {
     popularLista(usuario: Usuario) {
         this.usuarios.push(usuario);
         this.usuarioObject = new Usuario();
-        this.usuarioObject.perfil = {nome:""};
+        this.usuarioObject.perfil = this.perfis[0];
     }
 
     public editarUsuario(usuario, persistir = false): void {
         this.edit = true;
-        this.usuarioObject = usuario;
         
+        for(var p in this.perfis){
+            if (usuario.perfil.nome === this.perfis[p].nome){
+                usuario.perfil = this.perfis[p];
+            }
+        }
+        
+        this.usuarioObject = usuario;
+
         if (persistir) {
             this.usuarioObject = new Usuario();
             this.edit = false;
-            this.usuarioObject.perfil = {nome:""};
+            this.usuarioObject.perfil = this.perfis[0];
         }
     }
 
@@ -72,6 +74,6 @@ export class UsuarioComponent implements OnInit {
 
     ngOnInit(): void {
         this.listar();
-        this.usuarioObject.perfil = {nome:""}
-    } 
+        this.usuarioObject.perfil = this.perfis[2];
+    }
 }

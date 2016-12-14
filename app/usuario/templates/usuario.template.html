@@ -5,10 +5,8 @@
 </div>
 <div class="form-group col-xs-6 col-md-6">
     <label>Perfil</label>
-    <select [(ngModel)]="usuarioObject.perfil.nome"  >
-        <option  *ngFor="let perfil of perfis" [value]="perfil.nome" >
-            {{perfil.nome}}
-        </option>
+    <select [(ngModel)]="usuarioObject.perfil"  >
+        <option [ngValue]="p"  *ngFor="let p of perfis">{{p.nome}}</option>
     </select>
        
 </div>
