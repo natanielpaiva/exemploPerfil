@@ -1,25 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { Usuario } from '../class/usuario';
+import { Perfil } from '../../perfil/class/perfil';
 import { UsuarioService } from '../service/usuario.service';
+import { PerfilService } from '../../perfil/service/perfil.service';
 //nataniel.paiva@gmail.com
 @Component({
     selector: 'usuario',
     templateUrl: 'app/usuario/templates/usuario.template.html',
-    providers: [UsuarioService]
+    providers: [UsuarioService, PerfilService]
 })
 export class UsuarioComponent implements OnInit {
     usuarios: Usuario[];
     usuarioObject = new Usuario();
-    perfis = [
-        { nome: "Admin" },
-        { nome: "Oreia" },
-        { nome: "Professor" }
-    ];
+    perfis: Perfil[];
 
     errorMessage: any;
     i: number;
 
-    constructor(private usuarioService: UsuarioService) {
+    constructor(private usuarioService: UsuarioService,
+        private perfilService: PerfilService) {
     }
     edit = false;
 
@@ -49,13 +48,13 @@ export class UsuarioComponent implements OnInit {
 
     public editarUsuario(usuario, persistir = false): void {
         this.edit = true;
-        
-        for(var p in this.perfis){
-            if (usuario.perfil.nome === this.perfis[p].nome){
+
+        for (var p in this.perfis) {
+            if (usuario.perfil.nome === this.perfis[p].nome) {
                 usuario.perfil = this.perfis[p];
             }
         }
-        
+
         this.usuarioObject = usuario;
 
         if (persistir) {
@@ -72,8 +71,19 @@ export class UsuarioComponent implements OnInit {
             error => this.errorMessage = <any>error);
     }
 
+    public listarPerfil(): void {
+        this.perfilService.getList()
+            .subscribe(
+            response => this.popularPerfis(response),
+            error => this.errorMessage = <any>error);
+    }
+    popularPerfis(perfis): void{
+        this.perfis = perfis;
+        this.usuarioObject.perfil = this.perfis[0];
+    }
+
     ngOnInit(): void {
         this.listar();
-        this.usuarioObject.perfil = this.perfis[2];
+        this.listarPerfil();
     }
 }
