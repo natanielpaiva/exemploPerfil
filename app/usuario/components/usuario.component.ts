@@ -3,11 +3,12 @@ import { Usuario } from '../class/usuario';
 import { Perfil } from '../../perfil/class/perfil';
 import { UsuarioService } from '../service/usuario.service';
 import { PerfilService } from '../../perfil/service/perfil.service';
+import { CorreiosService } from '../../correios/service/correios.service';
 //nataniel.paiva@gmail.com
 @Component({
     selector: 'usuario',
     templateUrl: 'app/usuario/templates/usuario.template.html',
-    providers: [UsuarioService, PerfilService]
+    providers: [UsuarioService, PerfilService, CorreiosService]
 })
 export class UsuarioComponent implements OnInit {
     usuarios: Usuario[];
@@ -18,9 +19,28 @@ export class UsuarioComponent implements OnInit {
     i: number;
 
     constructor(private usuarioService: UsuarioService,
-        private perfilService: PerfilService) {
+        private perfilService: PerfilService,
+        private correiosService: CorreiosService) {
     }
     edit = false;
+
+    onChange(cep): void {
+       
+        if (cep != null) {
+            if (cep.toString().length === 8) {
+                this.correiosService.getCep(cep)
+                .subscribe(
+                    response => this.popularLogadouro(response)
+                );
+            }
+        }
+    }
+    
+    popularLogadouro(response){
+        this.usuarioObject.endereco = 
+        "Logradouro: " + response.logradouro + 
+        " Barrio: " + response.bairro ; 
+    }
 
     deletarUsuario(id, i): void {
         this.i = i;
@@ -77,7 +97,7 @@ export class UsuarioComponent implements OnInit {
             response => this.popularPerfis(response),
             error => this.errorMessage = <any>error);
     }
-    popularPerfis(perfis): void{
+    popularPerfis(perfis): void {
         this.perfis = perfis;
         this.usuarioObject.perfil = this.perfis[0];
     }
